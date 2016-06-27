@@ -13,27 +13,27 @@ const Comment = connectComponent(CommentPage);
 
 export default class TabShow extends Component {
 	_onPress() {
-    const { navigator , pageFlag ,aid} = this.props
-    if(pageFlag == 'comment'){
-      return navigator.push({
-        component : Comment,
-        params : {
-          aid : aid
+        const { navigator , pageFlag ,aid} = this.props
+        if(pageFlag == 'comment'){
+          return navigator.push({
+            component : Comment,
+            params : {
+              aid : aid
+            }
+          })
         }
-      })
-    }
 		navigator && navigator.pop && navigator.pop()
 	}
 
 	render() {
 		return (
-      <View style={this.props.wrapStyle}>
-        <TouchableOpacity onPress={this._onPress.bind(this)}>
-  				<View style={styles.iconWrapper}>
-            {this.props.content}
-  				</View>
-        </TouchableOpacity>
-			</View>
+              <View style={this.props.wrapStyle}>
+                    <TouchableOpacity onPress={this._onPress.bind(this)}>
+                        <View style={styles.iconWrapper}>
+                            {this.props.content}
+                        </View>
+                    </TouchableOpacity>
+              </View>
 		)
 	}
 }
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flex : 1,
     position:'absolute',
     left : 20,
-    bottom : 25,
+    bottom : 25
   },
 	returnIcon: {
 		flex: 1,

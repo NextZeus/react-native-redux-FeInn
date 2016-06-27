@@ -17,11 +17,11 @@ const logger = createLogger({
 	predicate: (getState, action) => false,
 	collapsed: true,
 	duration: true,
-  colors: {
-    prevState: () => `#FFEB3B`,
-    nextState: () => `#4CAF50`,
-  },
-  diff: true,
+    colors: {
+        prevState: () => `#FFEB3B`,
+        nextState: () => `#4CAF50`
+    },
+    diff: true
 });
 
 let middlewares = [
@@ -40,7 +40,7 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab: 'home',
+      selectedTab: 'home'
     };
   }
 

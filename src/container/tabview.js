@@ -44,7 +44,7 @@ export default class TabView extends Component {
   goSetting (){
     const { navigator } = this.props;
     navigator.push({
-      component : connectComponent(Login),
+      component : connectComponent(Login)
     })
   }
 

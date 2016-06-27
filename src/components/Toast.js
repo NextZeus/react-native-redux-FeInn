@@ -29,7 +29,7 @@ class Toast extends Component {
 		if(dely) this.setState({defaultDely:dely});
 
 		this.setState({
-			show : true,
+			show : true
 		})
 
     Animated.timing(this.state.fadeAnim, {
@@ -48,10 +48,10 @@ class Toast extends Component {
   render (){
 		if(!this.state.show) return null;
     return(
-      <Animated.View
-        style={[styles.toastWrap,{opacity: this.state.fadeAnim}]}
-      >
-        <Text style={styles.toastText}>{this.state.defaultText}</Text>
+      <Animated.View style={[styles.toastWrap,{opacity: this.state.fadeAnim}]} >
+          <Text style={styles.toastText}>
+              {this.state.defaultText}
+          </Text>
       </Animated.View>
     )
   }
