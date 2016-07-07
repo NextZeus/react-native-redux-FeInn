@@ -29,6 +29,7 @@ export function get(url,istrue){
   return fetch(url).then(filterStatus).then(filterJSON)
 }
 
+
 export function post(url, body , istrue) {
 	if(!istrue){
 		url = urlPrefix + url;

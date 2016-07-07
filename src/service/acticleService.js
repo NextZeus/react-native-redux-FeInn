@@ -1,44 +1,31 @@
 import * as requestService from './requestService';
 import config from '../config'
 const urlPrefix = config.ghDomain;
+
 export function getPhoto({page,limit}){
-
-    var imageArr = [
-        'http://b256.photo.store.qq.com/psb?/V120IvEC4cu4h6/lbp*bIUyJXA2WOlTXvw4IqPKHqdLis**EGSy148h4tw!/b/dAABAAAAAAAA&bo=IAMsBAAAAAAFBy8!&rf=viewer_4',
-        'http://b256.photo.store.qq.com/psb?/V120IvEC4cu4h6/tjbEAVPxeKozj9g7uVEYj7*3uZw0AusUonrC58KcwiY!/b/dAABAAAAAAAA&bo=OASfBcwEZAYFByg!&rf=viewer_4',
-        'http://b258.photo.store.qq.com/psb?/V120IvEC4cu4h6/h.oWXVIQtk3K9x4Y2FLeOXp9t6OkmM47Jvx.GKwuIGg!/b/dAIBAAAAAAAA&bo=OASfBcwEZAYFAC8!&rf=viewer_4',
-        'http://b161.photo.store.qq.com/psb?/V120IvEC4cu4h6/aNypRiYpwDYRuZggSrf03jNsOfPsfzQt6S5BbPjnJuA!/b/dKEAAAAAAAAA&bo=wAMABcADAAUFACM!&rf=viewer_4',
-        'http://b254.photo.store.qq.com/psb?/V120IvEC4cu4h6/60eUvUbs0aYkKGr3nyy.Q842JMkwFst3*VRTQGLtnSc!/b/dP4AAAAAAAAA&bo=wAMABcADAAUFACM!&rf=viewer_4',
-        'http://b252.photo.store.qq.com/psb?/V120IvEC4cu4h6/KoL4YNFS6plKEX4jigugZUZgyLfYamUuWThHKhxhIWQ!/b/dPwAAAAAAAAA&bo=wAMABcADAAUFACM!&rf=viewer_4',
-        'http://b169.photo.store.qq.com/psb?/V120IvEC4cu4h6/uah*w3L.Y96fyyPVjNsexSZNcXoejsXc9tiNzMciaUY!/b/dKkAAAAAAAAA&bo=wAMABcADAAUFACM!&rf=viewer_4',
-        'http://b167.photo.store.qq.com/psb?/V120IvEC4cu4h6/8FcZME6omfO5aSzByMCoCtkFRolAr.bnxNR4PgKqxzs!/b/dKcAAAAAAAAA&bo=OASfBcwEZAYFAC8!&rf=viewer_4',
-        'http://b164.photo.store.qq.com/psb?/V120IvEC4cu4h6/5vV0Fwc8iDzT2Jzt3EKABvrXrPEdM5Uas4adjnDyqIA!/b/dKQAAAAAAAAA&bo=4AGAAuABgAIFACM!&rf=viewer_4',
-        'http://b255.photo.store.qq.com/psb?/V120IvEC4cu4h6/6QY44LCVeAQayqzEysU996pD6QuMAt2nMFltxU4G2wc!/b/dP8AAAAAAAAA&bo=4AGAAuABgAIFACM!&rf=viewer_4',
-        'http://b168.photo.store.qq.com/psb?/V120IvEC4cu4h6/.bn3Nc2NHNrgJlE*kMW12wxpNuoA6Q0iLiTEv8mLKrE!/b/dKgAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b254.photo.store.qq.com/psb?/V120IvEC4cu4h6/EL6K7Tbbrr5IWQYam4T*Eg4ZDZehfmnUgp8Dkjm5sAU!/b/dP4AAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b252.photo.store.qq.com/psb?/V120IvEC4cu4h6/kFZKiFL1SsHMaUW.iTd*Q2xOksWGkHRUsrN*0d6hxEo!/b/dPwAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b169.photo.store.qq.com/psb?/V120IvEC4cu4h6/FpQGCy9AmDgeQdQxNtmaSzDJ*aeyQvT22QKZYOs0agY!/b/dKkAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b165.photo.store.qq.com/psb?/V120IvEC4cu4h6/cVQ336iaUxKArRvJcB7Y*GtJB8Sqe3yCwb4DfEED10g!/b/dKUAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b170.photo.store.qq.com/psb?/V120IvEC4cu4h6/4VEFgiMzH.0ZJ9Qdqa5tg6x*y5JOgcfQkgtBqFYsE5s!/b/dKoAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b162.photo.store.qq.com/psb?/V120IvEC4cu4h6/NQO2Zdq7zqzlFctlCBCNI3OKL5HkCGYzcvSq6Q4GxDY!/b/dKIAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b169.photo.store.qq.com/psb?/V120IvEC4cu4h6/b*KIujwM4asD4P8E5DxIAhqi9yrwKYnwHii2DYgUI2I!/b/dKkAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b252.photo.store.qq.com/psb?/V120IvEC4cu4h6/6M5zwLiPLujzKmCYq.2Oe8ox03G4IPEZIU*eCy7YPdg!/b/dPwAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b166.photo.store.qq.com/psb?/V120IvEC4cu4h6/bVfnbmW*Ad1AkraK5NMOb0YmgwohHlzdbImJ0*4LTM8!/b/dKYAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b165.photo.store.qq.com/psb?/V120IvEC4cu4h6/r*bO.onkfqR123IebanRO06tywrBeiariIAG6uzB8aQ!/b/dKUAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b163.photo.store.qq.com/psb?/V120IvEC4cu4h6/oE7kmK.8E8ybI*Ppwzqgb4mNJhjw*eSsahz1tdn8IOc!/b/dKMAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b164.photo.store.qq.com/psb?/V120IvEC4cu4h6/iPkyPAQmUXjsZd6i7.SeppJM.JJ8Qh2GLjVLvqlJKwY!/b/dKQAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b167.photo.store.qq.com/psb?/V120IvEC4cu4h6/J.omAjOSnVmVyFN*tV18nfhsd11TdUkWCDlnt80msGc!/b/dKcAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b167.photo.store.qq.com/psb?/V120IvEC4cu4h6/g5iQP3MTRqOkeqvVLwEOViKYZKwZiLSoOtrMBSJxL*Y!/b/dKcAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b282.photo.store.qq.com/psb?/V120IvEC4cu4h6/SBwQzgTd4Lv2CETX0moL7mxziwFB1gtpbl82dS62PIc!/b/dBoBAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b168.photo.store.qq.com/psb?/V120IvEC4cu4h6/kWiHt7gDpH*KSUzpm36W65ryClWfRTiqu2HYxaoDV6U!/b/dKgAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b161.photo.store.qq.com/psb?/V120IvEC4cu4h6/qJ6keUZfaV4XC*qBZ0PLYWdwIXyJm5Aed72W31Ocz98!/b/dKEAAAAAAAAA&bo=7gLoAwAAAAAFACQ!&rf=viewer_4',
-        'http://b164.photo.store.qq.com/psb?/V120IvEC4cu4h6/AL2WZLC2SjZKbUkdUKBTFKWLEtfq.WSQjYZXcvvDhpw!/b/dKQAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b251.photo.store.qq.com/psb?/V120IvEC4cu4h6/lAzgZWgWTHa48GuK2bOqDWMd7hyByAu6qvV3d7j*rfE!/b/dPsAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4',
-        'http://b161.photo.store.qq.com/psb?/V120IvEC4cu4h6/Te6K76Xqm.8*kstBhjBAsFLe9xg*TsJQnBtU3YbwFKA!/b/dKEAAAAAAAAA&bo=7gLqAwAAAAAFACY!&rf=viewer_4'
-    ];
-
+    var imageArr = [ 'http://hbimg.b0.upaiyun.com/6c069856192dee3a00152a5672ace81d7b668fb12b036-AzrR9k_fw320',
+        'http://hbimg.b0.upaiyun.com/79968187b6d6a7463f726998015e73bc505dbb591263f8-gpyHex_fw320',
+        'http://hbimg.b0.upaiyun.com/251475779c59235a0d2df60b0a42629d0fd72b30145ef6-UHdkNM_fw320',
+        'http://hbimg.b0.upaiyun.com/b65a807bee513122577a786622d196e049e6db698c8c7-tMXrTP_fw320',
+        'http://hbimg.b0.upaiyun.com/2e2a6cd957cfdcf8330509e075d17fc6a50b8dc639696-Vab6JH_fw320',
+        'http://hbimg.b0.upaiyun.com/621357511661f78d1a681b07ca1c3ac72ccc681e10a25-FTKEVQ_fw320',
+        'http://hbimg.b0.upaiyun.com/3eb47db3a2b082c2d73bce6f0bec31ffffb5296e22fed-7LkAPe_fw320',
+        'http://hbimg.b0.upaiyun.com/7cd571c902d218261913a95670741cd0ca24704b30444-Aoo1gS_fw320',
+        'http://hbimg.b0.upaiyun.com/dc1324bbf00ab4b59c4cc772254dd7c23bd6f68886845-tXqPI4_fw320',
+        'http://hbimg.b0.upaiyun.com/bef21fb5b9d107c3cbd51a14c9e07de5ba086c231b2c0-BgznHb_fw320',
+        'http://hbimg.b0.upaiyun.com/8561bbb2a43495e10c58e6fb07f0cb16cdb07ef361a997-JXBrBs_fw320',
+        'http://hbimg.b0.upaiyun.com/5d36740837cc20ce03f2c772e96e65e89edf085fc013c-QFTIMn_fw320',
+        'http://hbimg.b0.upaiyun.com/57531e11926f51e57c0d33af81f51a452ae06f7169fa5-HCoNou_fw320',
+        'http://hbimg.b0.upaiyun.com/fedb171c98bd2241b85c60da57c8eebbde6d95e8d463a-7kWCB9_fw320',
+        'http://hbimg.b0.upaiyun.com/24136b63c1b2acaa0f8c5083be47565ea9fcfd1e334c29-WKGlfK_fw320',
+        'http://hbimg.b0.upaiyun.com/a2a68258bf08c8eb629d9958dfa64e1297c2ca2b5b627-gVhk3Y_fw320',
+        'http://hbimg.b0.upaiyun.com/f15ef7e6fddb6254090c7d7457e255af3af72755236cf-DwBbiq_fw320',
+        'http://hbimg.b0.upaiyun.com/00fc825a621f3303344a77768142a32c1a56cf1d351a3-NgiG7T_fw320',
+        'http://hbimg.b0.upaiyun.com/f1a6de9fd99bbe07254006199bd70484870d09117f543-iOUgEK_fw320',
+        'http://hbimg.b0.upaiyun.com/aed302e7bc72be529f3237f4f8dd700a2e0b124334630-2fnvRu_fw320' ];
 
     var results = [];
+
     for(var i = 0 ; i < imageArr.length; i++){
         var obj = {
             _id: Date.now()+'',
@@ -50,6 +37,7 @@ export function getPhoto({page,limit}){
         }
         results.push(obj);
     }
+
     return results;
 
     //todo remove get request
