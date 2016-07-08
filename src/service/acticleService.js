@@ -51,7 +51,7 @@ export function getPhoto({page,limit}){
             return data.results;
             // return data.showapi_res_body.newslist
         } else {
-            throw 'do getPhoto failed'
+            throw 'do getPhoto failed';
         }
     });
 }
