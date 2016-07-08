@@ -10,8 +10,12 @@ import {
   Dimensions,
   TextInput,
   ScrollView,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  RefreshControl,
+  Keyboard,
+  Platform
 } from 'react-native';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import Html from '../utils/Html';
@@ -31,16 +35,25 @@ class Comment extends Component {
   constructor (props){
     super(props);
     this.state = {textInput: ''};
-    this.keyboardWillShowEvent = DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-		this.keyboardWillHideEvent = DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+    this._onRefresh = this._onRefresh.bind(this);
+    this.keyboardWillShowEvent = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+		this.keyboardWillHideEvent = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillMount(){
+    this.getTopicData();
+  }
+
+  getTopicData (){
     const { data } = this.props.Detail;
     if(data && data.id){
       const { actions } = this.props;
       actions.getTopicDetail(data.id)
     }
+  }
+
+  _onRefresh (){
+    this.getTopicData()
   }
 
   keyboardWillShow (e){
@@ -127,7 +140,6 @@ class Comment extends Component {
       replyId : row.id,
       userName : User.data.loginname
     } ,()=>{
-      console.log('okkok111')
     });
   }
 
@@ -157,7 +169,6 @@ class Comment extends Component {
     })();
 
     const { Comment , navigator , User} = this.props;
-    console.log(this)
     return (
       <View style={[styles.container]}>
         <View style={[styles.commentHeader]}>
@@ -178,25 +189,37 @@ class Comment extends Component {
           style={[styles.commentList]}
           ref={(view) => this.commentView = view}
         >
-          {
-            Comment.topics.data && Comment.topics.data.replies && Comment.topics.data.replies.length !=0 ?
-            <ListView
-              ref={(view) => this._listView = view}
-              dataSource={ds.cloneWithRows(Comment.topics.data.replies.concat([]).reverse())}
-              renderRow={this._renderRow.bind(this)}
-              initialListSize={10}
-              onEndReachedThreshold={0}
-              pageSize={3}
-              showsVerticalScrollIndicator={true}
-              removeClippedSubviews={true}
-              pagingEnabled={true}
-              refreshDescription="正在加载..."
-              renderFooter={null}
-            /> :
-            <View style={{flexDirection:'row',paddingTop:30,alignItems : 'center',justifyContent : 'center'}}>
-              <Text style={{fontSize:20}}>暂无评论</Text>
-            </View>
+        {
+          !Comment.getTopicsIsPending && Comment.topics.data && Comment.topics.data.replies && !Comment.topics.data.replies.length ?
+          <View style={{flexDirection:'row',paddingTop:30,alignItems : 'center',justifyContent : 'center'}}>
+            <Text style={{fontSize:20,color:'#eee'}}>暂无评论</Text>
+          </View>
+          :null
+        }
+        <ListView
+          ref={(view) => this._listView = view}
+          dataSource={ds.cloneWithRows(Comment.topics.data && Comment.topics.data.replies && Comment.topics.data.replies.length && Comment.topics.data.replies.concat([]).reverse() || [])}
+          renderRow={this._renderRow.bind(this)}
+          initialListSize={10}
+          onEndReachedThreshold={0}
+          pageSize={3}
+          showsVerticalScrollIndicator={true}
+          removeClippedSubviews={true}
+          pagingEnabled={true}
+          renderFooter={null}
+          enableEmptySections={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={Comment.getTopicsIsPending || false}
+              onRefresh={this._onRefresh}
+              tintColor="#ff0000"
+              title="Loading..."
+              colors={['#ff0000', '#00ff00', '#0000ff']}
+              progressBackgroundColor="#ffff00"
+            />
           }
+        />
+
         </View>
         {
           User.data ?
@@ -204,6 +227,7 @@ class Comment extends Component {
             <Image
               style={[styles.article,styles.authorHeader]}
               source={{uri : User.data.avatar_url}}
+              defaultSource={require('../public/defaultImg.png')}
             />
             <View style={{flex:1}}>
               <TextInput
@@ -237,7 +261,7 @@ class Comment extends Component {
           </View> :
           <View style={[styles.commentBox,{flexDirection:'row',alignItems:'center',justifyContent:"center"}]}>
             <TouchableOpacity onPress={()=>this.goLogin()}>
-            <Text style={{fontSize:20,color:'#ccc',flex : 1,textAlign:'center'}}>登录后评论</Text>
+            <Text style={{fontSize:20,color:'#ccc',textAlign:'center'}}>登录后评论</Text>
             </TouchableOpacity>
           </View>
         }
@@ -259,7 +283,7 @@ class Comment extends Component {
           style={styles.content}
         >
 
-          <View style={{flex : 1,flexDirection:'row',justifyContent : 'space-between'}}>
+          <View style={{flexDirection:'row',justifyContent : 'space-between'}}>
             <View style={{flex:1}} >
               <Text>{rowData.author.loginname}</Text>
             </View>
@@ -309,13 +333,14 @@ class Comment extends Component {
 }
 
 const avatarWidth = 40;
-const headerHeight = 65;
+const headerHeight = Platform.OS == 'ios' ? 65 : 45;
 const {height, width} = Dimensions.get('window');
-const commentHeight = height - headerHeight - avatarWidth - 20
+const startBar = Platform.OS == 'ios' ? 20 : 40;
+const commentHeight = height - headerHeight - avatarWidth - startBar;
 // const { width , height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container : {
-    height : height - headerHeight - avatarWidth
+    height : height - headerHeight - avatarWidth,
   },
   commentList : {
     height : commentHeight
@@ -326,7 +351,7 @@ const styles = StyleSheet.create({
   commentBox : {
     padding:10,
     height : 60,
-    flexDirection : 'row'
+    flexDirection : 'row',
   },
   replyBtn : {
     paddingTop : 5,
@@ -347,7 +372,7 @@ const styles = StyleSheet.create({
   },
   commentHeader : {
     height : headerHeight,
-    paddingTop:20,
+    paddingTop: Platform.OS == 'ios' ? 20 : 0,
     flexDirection : 'row',
     backgroundColor : '#333',
     alignItems : 'center',
@@ -356,7 +381,7 @@ const styles = StyleSheet.create({
   returnBtn : {
     position : 'absolute',
     left : 10,
-    top : 35
+    top : Platform.OS == 'ios'  ? 35 : 15
   },
   wrapStyle : {
     flex : 1,

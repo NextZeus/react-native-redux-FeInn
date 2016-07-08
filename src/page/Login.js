@@ -8,7 +8,8 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  Platform
+  Platform,
+  Switch
 } from 'react-native';
 import TabShow from '../components/TabShow';
 import Camera from 'react-native-camera';
@@ -17,10 +18,34 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { randomBg } from '../utils';
 import connectComponent from '../utils/connectComponent';
 import * as QrCodeComponent from './QrCode';
+import About from './About';
 const QrCode = connectComponent(QrCodeComponent);
+
 class Login extends Component {
   constructor (props){
     super(props);
+    this.toAbout = this.toAbout.bind(this);
+    this.clearCache = this.clearCache.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+
+  toAbout (){
+    const { navigator } = this.props;
+    navigator && navigator.push({
+      component : About,
+      sceneConfig : Navigator.SceneConfigs.VerticalUpSwipeJump
+    })
+  }
+
+  clearCache (){
+    const { actions } = this.props;
+    actions.toast('清除成功')
+  }
+
+  logout(){
+    const { actions } = this.props;
+    actions.logout();
+    actions.toast('退出成功')
   }
 
   login (){
@@ -43,15 +68,10 @@ class Login extends Component {
       })
     }
 
-
-    // data.then((res)=>{
-    //   console.log(res)
-    // })
   }
 
   renderHeader (){
     const {isLogin , User} = this.props;
-    console.log(this)
     return (
       <View style={[styles.userHeader,{backgroundColor:randomBg()}]}>
         <View style={styles.userImgWrap}>
@@ -61,16 +81,18 @@ class Login extends Component {
               <Image
                 style={[styles.userImg]}
                 source={{uri : User.data.avatar_url}}
+                defaultSource={require('../public/defaultImg.png')}
               /> :
               <Image
                 style={[styles.userImg]}
-                source={{uri : 'http://test.imgs.wn518.com/upimages/ys-sales/2016-03-29/87e08bb58a0a9b57bcd035fbf6bb4e02_1_0_0_420_420_1.jpg'}}
+                source={require('../public/defaultImg.png')}
+
               />
             }
           </View>
           <View style={styles.userName}>
             {
-              0 && User && User.success ?
+              User && User.success ?
               <Text style={{textAlign:'center',color:textColor,fontSize:16}}>{User.data.loginname}</Text> :
               <TouchableOpacity onPress={this.login.bind(this)}>
               <Text style={{textAlign:'center',color:textColor,fontSize:16}}>登陆</Text>
@@ -81,11 +103,70 @@ class Login extends Component {
         {
           User && User.success ?
           <View style={styles.userInfo}>
-          <Text style={{textAlign:'center',color:textColor}}>2121/122</Text>
+          <Text style={{textAlign:'center',color:textColor}}>积分：{User.data.score || 0}</Text>
           <Text style={{textAlign:'center',color:textColor}}>注册时间：{moment(User.data.create_at).format('l')}</Text>
           </View>
           :null
         }
+      </View>
+    )
+  }
+
+  renderOptions (){
+    const { User } = this.props;
+    return (
+      <View>
+        <TouchableOpacity onPress={this.clearCache.bind(this)}>
+        <View style={styles.itemOptions}>
+          <Icon
+            name='md-trash'
+            size={ 20 }
+            color='#333'
+          />
+          <Text style={styles.optionsText}>清除缓存</Text>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <View style={styles.itemOptions}>
+          <Icon
+            name='md-sync'
+            size={ 20 }
+            color='#333'
+          />
+          <Text style={styles.optionsText}>检查更新</Text>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.toAbout}>
+        <View style={styles.itemOptions}>
+          <Icon
+            name='md-key'
+            size={ 20 }
+            color='#333'
+          />
+          <Text style={styles.optionsText}>关于</Text>
+        </View>
+        </TouchableOpacity>
+        {
+          User && User.data ?
+          <TouchableOpacity
+            onPress={this.logout}
+          >
+          <View style={styles.itemOptions}>
+            <Icon
+              name='md-power'
+              size={ 20 }
+              color='#333'
+            />
+            <Text style={styles.optionsText}
+              onPress={this.logout}
+            >
+              注销
+            </Text>
+          </View>
+          </TouchableOpacity>
+          : null
+        }
+
       </View>
     )
   }
@@ -104,6 +185,7 @@ class Login extends Component {
       <View style={[styles.container]}>
         <View>
           {this.renderHeader()}
+          {this.renderOptions()}
         </View>
         <TabShow {...this.props}
           content={pointContent}
@@ -120,6 +202,26 @@ const textColor = '#fff'
 const styles = StyleSheet.create({
   container : {
     flex : 1,
+    backgroundColor:'#f0f0f0'
+  },
+  itemOptions : {
+    flexDirection : 'row',
+    height : 50,
+    borderBottomWidth : 1,
+    borderTopWidth : 1,
+    borderColor : '#eee',
+    alignItems : 'center',
+    paddingHorizontal : 8,
+    // paddingVertical : 10
+    marginTop : 10,
+    backgroundColor : '#fff'
+  },
+  optionsText : {
+    // lineHeight :40,
+    fontSize : 15,
+    paddingHorizontal : 3,
+    color :'#333',
+    marginLeft : 5
   },
   userImgWrap : {
     flex : 8,
@@ -158,7 +260,7 @@ const styles = StyleSheet.create({
     flex : 1,
     position:'absolute',
     left : 20,
-    bottom : 25,
+    bottom : Platform.OS == 'ios' ? 25 : 50,
   },
 })
 

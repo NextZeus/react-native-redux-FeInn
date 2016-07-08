@@ -1,9 +1,10 @@
-import React, {
-	Component,
+import React , { Component } from 'react';
+import {
 	StyleSheet,
 	Dimensions,
 	View,
-  TouchableOpacity
+  TouchableOpacity,
+	Platform
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,6 +14,7 @@ const Comment = connectComponent(CommentPage);
 
 export default class TabShow extends Component {
 	_onPress() {
+<<<<<<< HEAD
         const { navigator , pageFlag ,aid} = this.props
         if(pageFlag == 'comment'){
           return navigator.push({
@@ -21,12 +23,25 @@ export default class TabShow extends Component {
               aid : aid
             }
           })
+=======
+		if(this.props.onPress){
+			this.props.onPress();
+			return
+		}
+    const { navigator , pageFlag ,aid} = this.props
+    if(pageFlag == 'comment'){
+      return navigator.push({
+        component : Comment,
+        params : {
+          aid : aid
+>>>>>>> febobo/master
         }
 		navigator && navigator.pop && navigator.pop()
 	}
 
 	render() {
 		return (
+<<<<<<< HEAD
               <View style={this.props.wrapStyle}>
                     <TouchableOpacity onPress={this._onPress.bind(this)}>
                         <View style={styles.iconWrapper}>
@@ -34,6 +49,15 @@ export default class TabShow extends Component {
                         </View>
                     </TouchableOpacity>
               </View>
+=======
+      <View style={this.props.wrapStyle}>
+        <TouchableOpacity onPress={this._onPress.bind(this)}>
+  				<View style={[styles.iconWrapper,this.props.appStyle]}>
+            {this.props.content}
+  				</View>
+        </TouchableOpacity>
+			</View>
+>>>>>>> febobo/master
 		)
 	}
 }
@@ -44,7 +68,11 @@ const styles = StyleSheet.create({
     flex : 1,
     position:'absolute',
     left : 20,
+<<<<<<< HEAD
     bottom : 25
+=======
+    bottom : Platform.OS == 'ios' ? 25 : 50,
+>>>>>>> febobo/master
   },
 	returnIcon: {
 		flex: 1,

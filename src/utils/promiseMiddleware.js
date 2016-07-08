@@ -7,7 +7,6 @@ function isPromise(val) {
 
 export default function promiseMiddleware({ dispatch }) {
 	return next => action => {
-
 		if (!isFSA(action)) {
 			return isPromise(action)
 				? action.then(dispatch)
@@ -16,7 +15,6 @@ export default function promiseMiddleware({ dispatch }) {
 		const { meta = {}, payload } = action;
 
 		const id = _.uniqueId();
-
 		if (isPromise(payload)) {
 			dispatch({
 				...action,

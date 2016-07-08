@@ -22,6 +22,18 @@ export function reply({topicId , content , replyId}){
   })
 }
 
+export function getTopics({page,limit}){
+  let slimit =  limit ? limit : 10;
+  let url = `/topics?page=${page}&limit=${slimit}`;
+  return requestService.get(url).then( data =>{
+    if(data.success){
+      return data
+    }else{
+      throw 'do get topics failed'
+    }
+  })
+}
+
 export function getReply(id){
   let url = `/topic/${id}`;
   return requestService.get(url).then( data =>{

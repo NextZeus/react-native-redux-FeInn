@@ -3,6 +3,7 @@ import config from '../config'
 const urlPrefix = config.ghDomain;
 
 export function getPhoto({page,limit}){
+<<<<<<< HEAD
     var imageArr = [ 'http://hbimg.b0.upaiyun.com/6c069856192dee3a00152a5672ace81d7b668fb12b036-AzrR9k_fw320',
         'http://hbimg.b0.upaiyun.com/79968187b6d6a7463f726998015e73bc505dbb591263f8-gpyHex_fw320',
         'http://hbimg.b0.upaiyun.com/251475779c59235a0d2df60b0a42629d0fd72b30145ef6-UHdkNM_fw320',
@@ -36,6 +37,22 @@ export function getPhoto({page,limit}){
             who: '代码家'
         }
         results.push(obj);
+=======
+  let url = `${urlPrefix}/%E7%A6%8F%E5%88%A9/${limit}/${page}`;
+  // let url = `${urlPrefix}`;
+  return requestService.get(url,true).then( data =>{
+    if(!data.error){
+      return {
+        list : data.results,
+        params : {
+          page,
+          limit
+        }
+      }
+      // return data.showapi_res_body.newslist
+    }else{
+      throw 'do getPhoto failed'
+>>>>>>> febobo/master
     }
 
     return results;
